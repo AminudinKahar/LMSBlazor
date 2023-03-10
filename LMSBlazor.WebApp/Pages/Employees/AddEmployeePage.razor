@@ -1,0 +1,88 @@
+﻿@page "/addEmployee"
+@inject NavigationManager NavigationManager
+@inject IAddEmployeeUseCase AddEmployeeUseCase
+
+@attribute [Authorize(Policy = "HR")]
+
+<h3>Tambah Pekerja Baru</h3>
+<EditForm Model="employee" OnValidSubmit="SaveEmployee">
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+    <ValidationSummary></ValidationSummary>
+    <div class="form-group">
+        <label class="form-label" for="name">Nama</label>
+        <InputText id="name"
+                   class="form-control"
+                   @bind-Value="employee.EmployeeName">
+
+        </InputText>
+    </div>
+    <div class="form-group">
+        <label class="form-label" for="age">Umur</label>
+        <InputNumber id="age"
+                     @bind-Value="employee.EmployeeAge"
+                     class="form-control">
+
+        </InputNumber>
+    </div>
+    <div class="form-group">
+        <label class="form-label" for="phoneNum">No Telefon</label>
+        <InputText id="phoneNum"
+                   @bind-Value="employee.EmployeePhoneNumber"
+                   class="form-control">
+
+        </InputText>
+    </div>
+    <div class="form-group">
+        <label class="form-label" for="email">Emel</label>
+        <InputText id="email"
+                   @bind-Value="employee.EmployeeEmail"
+                   class="form-control">
+
+        </InputText>
+    </div>
+    <div class="form-group">
+        <label class="form-label" for="hireDate">Tarikh Mula Bekerja</label>
+        <InputDate id="hireDate"
+                   @bind-Value="employee.HireDate"
+                   class="form-control">
+
+        </InputDate>
+    </div>
+    <div class="form-group">
+        <label class="form-label" for="lvs">Jenis Cuti</label>
+        <Employee_LeavesComponent Employee="this.employee"></Employee_LeavesComponent>
+    </div>
+    <br />
+
+    <div class="form-group">
+        <label class="form-label" for="totalDays">Jumlah Cuti Berbaki</label>
+        <InputNumber id="totalDays"
+                     @bind-Value="employee.TotalLeaveDays"
+                     class="form-control">
+
+        </InputNumber>
+    </div>
+    <button type="submit"
+            class="btn btn-primary">
+        Simpan
+    </button>
+    <button type="button"
+            class="btn btn-light"
+            @onclick="Cancel">
+        Kembali
+    </button>
+</EditForm>
+@code {
+    private Employee employee = new Employee();
+
+    private async Task SaveEmployee()
+    {
+        await AddEmployeeUseCase.ExecuteTask(employee);
+        NavigationManager.NavigateTo("/employees");
+    }
+
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo("/employees");
+    }
+}

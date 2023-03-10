@@ -1,0 +1,99 @@
+A. As a user I can view all inventories as well as search certain inventories by names, so that I can manage them.
+
+Main Scenario
+- Pre conditions
+1. The user is on the inventories index page.
+
+- Post conditions
+2. The user sees the inventories that meet search condition.
+
+- Detailed steps
+1. The user enters a few letters in the search box.
+2. The user clicks on the View button.
+
+Alternative Scenario A
+- Post conditions
+2a. The user sees all the inventories.
+
+- Detailed steps
+1a. The user makes search box empty.
+
+--------------------------------------------------------------------------------------------------------------------------
+B. As a user I can add new inventory.
+
+Main Scenario
+- Pre conditions
+1. The user is on the inventories page.
+2. The user clicks add button and the user will be redirected to add inventory page.
+
+- Post conditions
+2. The user succeed adding new inventory in inventory lists.
+
+- Detailed Steps
+1. The user keys in all informations in the fields given.
+2. The user clicks on the Save button, redirected back to inventories index page.
+
+Alternative Scenario A
+- Post conditions
+2a. The user fails adding new inventory in inventory lists.
+
+- Detailed Steps
+1a. The user did not key in required informations in the fields given.
+2a. The user clicks on the Save button, error validation occured.
+
+Alternative Scenario B
+
+- Detailed Steps
+1b. The user keys in same name as existing inventory in inventory lists.
+
+--------------------------------------------------------------------------------------------------------------------------
+C. As a user I can edit existing inventory.
+
+Main Scenario
+- Pre conditions
+1. The user is on the inventories index page.
+2. The user clicks edit button and the user will be redirected to edit inventory page, by inventory Id.
+
+- Post conditions
+2. The user succeed editing existing inventory in inventory lists.
+
+- Detailed Steps
+1. The user keys in all informations in the fields given.
+2. The user clicks on the Save button, redirected back to inventories index page.
+
+Alternative Scenario A
+- Post conditions
+2a. The user fails editing existing inventory in inventory lists.
+
+- Detailed Steps
+1a. The user did not key in required informations in the fields given.
+2a. The user clicks on the Save button, error validation occured.
+
+Alternative Scenario B
+
+- Detailed Steps
+1b. The user keys in same name as existing inventory in inventory lists.
+
+--------------------------------------------------------------------------------------------------------------------------
+D. As a user I can remove existing inventory.
+
+Main Scenario
+- Pre conditions
+1. The user is on the inventories index page.
+2. The user clicks delete button.
+
+- Post conditions
+2. The user succeed deleting existing inventory in inventory lists.
+
+- Detailed Steps
+1. The user clicks Delete button, redirected to modal page.
+2. The user will make confirmation by clicking confirm button.
+
+Alternative Scenario A
+- Post conditions
+2a. The user did not want to delete the inventory.
+
+- Detailed Steps
+2a. The user clicks on the Cancel button, redirected back to inventories index page.
+
+

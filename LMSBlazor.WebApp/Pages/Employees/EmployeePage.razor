@@ -1,0 +1,26 @@
+﻿@page "/employees"
+@inject NavigationManager NavigationManager
+
+@attribute [Authorize(Policy = "HR")]
+
+<h3>Senarai Pekerja</h3>
+<br />
+<SearchEmployeeComponent OnSearchEmployee="OnEmployeeSearch"></SearchEmployeeComponent>
+<br />
+<EmployeeListComponent searchTerm="@searchTerm"></EmployeeListComponent>
+<button type="button"
+        class="btn btn-primary"
+        @onclick="AddEmployee">
+    Tambah Baru
+</button>
+@code {
+    private string searchTerm = string.Empty;
+    private void OnEmployeeSearch(string searchTerm)
+    {
+        this.searchTerm = searchTerm;
+    }
+    private void AddEmployee()
+    {
+        NavigationManager.NavigateTo("/addEmployee");
+    }
+}

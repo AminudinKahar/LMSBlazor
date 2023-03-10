@@ -1,0 +1,140 @@
+﻿@page "/leaveApplication"
+@inject ISearchLeaveApplicationsUseCase SearchLeaveApplicationsUseCase
+@inject IApproveLeaveUseCase ApproveLeaveUseCase
+@inject IDenyLeaveUseCase DenyLeaveUseCase
+
+@inject IJSRuntime JSRuntime
+
+@attribute [Authorize(Policy = "HR")]
+
+<div id="print-area">
+    <h3>Senarai Permohonan Cuti</h3>
+    <br />
+
+    <div class="row">
+        <div class="col">
+            <label for="emp">Nama</label>
+            <input type="text" id="emp" class="form-control" @bind-value="empName" />
+        </div>
+        <div class="col">
+            <label for="df">Tarikh Dari:</label>
+            <input type="date" id="df" class="form-control" @bind-value="dateFrom" />
+
+        </div>
+        <div class="col">
+            <label for="dt">Tarikh Hingga:</label>
+            <input type="date" id="dt" class="form-control" @bind-value="dateTo" />
+
+
+        </div>
+        <div class="col">
+            <label for="at">Status</label>
+            <select id="at" class="form-control" @bind="approvalTypeId">
+                <option value="0">Semua</option>
+                <option value="1">Tunda</option>
+                <option value="2">Lulus</option>
+                <option value="3">Gagal</option>
+            </select>
+
+
+        </div>
+        <div class="col">
+            <label>&nbsp;</label>
+            <button type="button" class="btn btn-primary form-control" @onclick="SearchResult">Cari</button>
+        </div>
+        <div class="col">
+            <label>&nbsp;</label>
+            <button type="button" class="btn btn-primary form-control" @onclick="PrintReport">Cetak</button>
+
+        </div>
+
+    </div>
+    <br />
+    @if (leaveApplication != null)
+    {
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Tarikh</th>
+                    <th>Nama</th>
+                    <th>Jenis Cuti</th>
+                    <th>Tarikh Cuti Dipohon</th>
+                    <th>Jumlah Cuti Dipohon</th>
+                    <th>Status</th>
+                    <th>No Rujukan#</th>
+                    <th>Pengguna</th>
+                    <th id="action-button"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var la in leaveApplication)
+                {
+                    <tr>
+                        <td>@la.ApplicationDate.ToString("dd/MM/yyyy")</td>
+                        <td>@la.Employee?.EmployeeName</td>
+                        <td>@la.Leave?.LeaveName</td>
+                        <td>@la.DateFrom.ToString("dd/MM/yyyy") (@la.DateFromApplyType) - @la.DateTo.ToString("dd/MM/yyyy") (@la.DateToApplyType)</td>
+                        <td>@la.TotalDays</td>
+                        <td>@la.ApprovalType</td>
+                        <td>@la.LvNumber</td>
+                        <td>@la.DoneBy</td>
+                        @if (la.ApprovalType != ApprovalType.Lulus && la.ApprovalType != ApprovalType.Gagal)
+                        {
+                            <td id="action-button">
+                                <button type="button"
+                                        class="btn btn-primary"
+                                        @onclick="@(() => OnApproveLeave(la.LeaveApplicationId))">
+                                    Lulus
+                                </button>
+                                <button type="button"
+                                        class="btn btn-danger"
+                                        @onclick="@(() => OnDenyLeave(la.LeaveApplicationId))">
+                                    Batal
+                                </button>
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    }
+</div>
+
+@code {
+    private string empName = string.Empty;
+    private DateTime? dateFrom;
+    private DateTime? dateTo;
+    private int approvalTypeId = 0;
+    private IEnumerable<LeaveApplication>? leaveApplication;
+
+    private async Task SearchResult()
+    {
+        leaveApplication = null;
+
+        ApprovalType? apType = null;
+        if (approvalTypeId != 0) apType = (ApprovalType)approvalTypeId;
+
+        leaveApplication = await SearchLeaveApplicationsUseCase.ExecuteAsync(
+                empName,
+                dateFrom,
+                dateTo,
+                apType);
+    }
+
+    private async Task OnApproveLeave(int applicationId)
+    {
+        await ApproveLeaveUseCase.ExecuteAsync(applicationId);
+    }
+
+    private async Task OnDenyLeave(int applicationId)
+    {
+        await DenyLeaveUseCase.ExecuteAsync(applicationId);
+    }
+
+    private void PrintReport()
+    {
+        JSRuntime.InvokeVoidAsync("print");
+    }
+}

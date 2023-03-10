@@ -1,0 +1,12 @@
+﻿@page "/"
+@inject IViewLeavesByNameUseCase ViewLeavesByNameUseCase
+
+
+@code {
+    private List<Leave> _leaves = new List<Leave>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _leaves = (await ViewLeavesByNameUseCase.ExecuteAsync()).ToList();
+    }
+}

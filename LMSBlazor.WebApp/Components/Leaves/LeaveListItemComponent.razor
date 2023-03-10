@@ -1,0 +1,28 @@
+﻿@inject NavigationManager NavigationManager
+
+@if (Leaves != null && Leaves.Count > 0)
+{
+    foreach (var lv in Leaves)
+    {
+        <tr>
+            <td>@lv.LeaveName</td>
+            <td>
+                <button type="button"
+                        class="btn btn-light"
+                        @onclick="@(() => EditLeave(lv.LeaveId))">
+                    Ubah
+                </button>
+            </td>
+        </tr>
+    }
+}
+
+@code {
+    [Parameter]
+    public List<Leave> Leaves { get; set; } = new List<Leave>();
+
+    public void EditLeave(int leaveId)
+    {
+        NavigationManager.NavigateTo($"/editLeave/{leaveId}");
+    }
+}

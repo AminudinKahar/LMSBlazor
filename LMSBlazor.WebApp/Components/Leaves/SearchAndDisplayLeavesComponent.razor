@@ -1,0 +1,37 @@
+﻿@inject IViewLeavesByNameUseCase ViewLeaveByNameUseCase
+
+<SearchLeaveComponent OnSearchLeave="OnSearchLeave"></SearchLeaveComponent>
+@if (_leaves.Count > 0)
+{
+    <div class="search-result">
+        @foreach (var lv in _leaves)
+        {
+        <ul>
+            <li @key="@lv.LeaveId"
+                @onclick="@(async () => { await OnSelectLeave(lv); })">
+                @lv.LeaveName
+            </li>
+        </ul>
+        }
+    </div>
+
+}
+@code {
+    private List<Leave> _leaves = new List<Leave>();
+
+    [Parameter]
+    public EventCallback<Leave> OnLeaveSelected { get; set; }
+
+    private async Task OnSearchLeave(string searchTerm)
+    {
+        _leaves = (await ViewLeaveByNameUseCase.ExecuteAsync(searchTerm)).ToList();
+
+
+    }
+
+    private async Task OnSelectLeave(Leave leave)
+    {
+        await OnLeaveSelected.InvokeAsync(leave);
+        _leaves.Clear();
+    }
+}

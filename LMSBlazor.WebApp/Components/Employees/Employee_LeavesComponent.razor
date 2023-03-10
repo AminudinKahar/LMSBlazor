@@ -1,0 +1,58 @@
+﻿<div class="card">
+    <div class="card-body">
+        <SearchAndDisplayLeavesComponent OnLeaveSelected="OnLeaveSelected"></SearchAndDisplayLeavesComponent>
+        @if (this.Employee.Employee_Leaves != null && this.Employee.Employee_Leaves.Count > 0)
+        {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Perihal</th>
+                        <th>Jumlah Cuti Berbaki</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var emp_lv in this.Employee.Employee_Leaves)
+                    {
+                        <tr>
+                            <td>
+                                @emp_lv.Leave?.LeaveName
+                            </td>
+                            <td>
+                                <input type="number" 
+                                       min="0" 
+                                       @bind-value="emp_lv.DaysLeft" 
+                                       />
+                            </td>
+                            <td>
+                                <button type="button"
+                                        class="btn btn-light"
+                                        @onclick="@(() => RemoveLeave(emp_lv))">
+                                    Hapus
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+@code {
+    [Parameter]
+    public Employee Employee { get; set; } = new Employee();
+
+    private void RemoveLeave(Employee_Leave employee_Leave)
+    {
+        this.Employee.Employee_Leaves.Remove(employee_Leave);
+
+    }
+
+    private void OnLeaveSelected(Leave leave)
+    {
+        this.Employee.AddLeave(leave);
+    }
+
+
+}
+

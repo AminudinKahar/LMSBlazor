@@ -1,0 +1,47 @@
+﻿@inject IApproveLeaveUseCase ApproveLeaveUseCase
+@inject IDenyLeaveUseCase DenyLeaveUseCase
+
+@if (LeaveApplications != null && LeaveApplications.Count > 0)
+{
+    foreach (var la in LeaveApplications)
+    {
+        <tr>
+            <td>@la.LvNumber</td>
+            <td>@la.Employee?.EmployeeName</td>
+            <td>@la.Leave?.LeaveName</td>
+            <td>@la.TotalDays</td>
+            <td>@la.ApprovalType</td>
+            @if (la.ApprovalType != ApprovalType.Lulus && la.ApprovalType != ApprovalType.Gagal)
+            {
+                <td>
+                    <button type="button"
+                            class="btn btn-primary"
+                            @onclick="@(() => OnApproveLeave(la.LeaveApplicationId))">
+                        Lulus
+                    </button>
+                    <button type="button"
+                            class="btn btn-danger"
+                            @onclick="@(() => OnDenyLeave(la.LeaveApplicationId))">
+                        Batal
+                    </button>
+                </td>
+            }
+
+        </tr>
+    }
+}
+
+@code {
+    [Parameter]
+    public List<LeaveApplication> LeaveApplications { get; set; } = new List<LeaveApplication>();
+
+    private async Task OnApproveLeave(int applicationId)
+    {
+        await ApproveLeaveUseCase.ExecuteAsync(applicationId);
+    }
+
+    private async Task OnDenyLeave(int applicationId)
+    {
+        await DenyLeaveUseCase.ExecuteAsync(applicationId);
+    }
+}

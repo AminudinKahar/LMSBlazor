@@ -1,0 +1,273 @@
+﻿@page "/applyLeave"
+
+@using static LMSBlazor.WebApp.Components.Common.AutoCompleteComponent
+@inject IViewLeavesByNameUseCase ViewLeavesByNameUseCase
+@inject IViewLeaveByIdUseCase ViewLeaveByIdUseCase
+@inject IViewEmployeesByNameUseCase ViewEmployeesByNameUseCase
+@inject IViewEmployeeByIdUseCase ViewEmployeeByIdUseCase
+@inject IGenerateRefNumberUseCase GenerateRefNumberUseCase
+@inject IGenerateTotalDaysBasedOnDateFromAndDateTo GenerateTotalDaysBasedOnDateFromAndDateTo
+@inject IApplyLeaveUseCase applyLeaveUseCase
+
+@inject IJSRuntime JSRuntime
+
+<h3>Permohonan Cuti</h3>
+<br />
+<EditForm id="applyLeave-form" Model="applyLeaveViewModel" OnValidSubmit="Apply">
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+    <ValidationSummary></ValidationSummary>
+    <div class="form-group">
+        <label for="lvNumber">No Rujukan</label>
+        <InputText id="lvNumber"
+                   @bind-Value="applyLeaveViewModel.LvNumber"
+                   readonly
+                   class="form-control">
+        </InputText>
+
+    </div>
+    <br />
+
+    <div class="card">
+        <div class="card-body">
+            <div class="form-group">
+                <AutoCompleteComponent Label="Pekerja"
+                                       SearchFunction="SearchEmployee"
+                                       OnItemSelected="OnItemEmployeeSelected">
+                </AutoCompleteComponent>
+                <input type="hidden" value="@applyLeaveViewModel.EmployeeId" />
+            </div>
+        </div>
+    </div>
+    <br />
+
+    <div class="card">
+        <div class="card-body">
+            <div class="form-group">
+                <AutoCompleteComponent Label="Jenis Cuti"
+                                       SearchFunction="SearchLeave"
+                                       OnItemSelected="OnItemLeaveSelected">
+                </AutoCompleteComponent>
+                <input type="hidden" value="@applyLeaveViewModel.LeaveId" />
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="card">
+        <div class="card-body row">
+            <div class="form-group ">
+                <label for="dfhd">Mohon Untuk</label>
+                <select id="dfhd" class="form-control" @bind="_applyDateFromType">
+                    <option value="1" selected>Sepenuh Hari</option>
+                    <option value="2">Separuh Hari</option>
+                </select>
+            </div>
+            <br />
+            <div class="form-group ">
+                <label for="df">Tarikh Dari</label>
+                <InputDate id="df"
+                           @bind-Value="_dateFrom"
+                           class="form-control"
+                           Type="InputDateType.Date">
+                </InputDate>
+            </div>
+        </div>
+    </div>
+
+    <br />
+    <div class="card">
+        <div class="card-body">
+            <div class="form-group ">
+                <label for="dthd">Mohon Untuk</label>
+                <select id="dthd" class="form-control" @bind="_applyDateToType">
+                    <option value="1" selected>Sepenuh Hari</option>
+                    <option value="2">Separuh Hari</option>
+                </select>
+            </div>
+            <br />
+            <div class="form-group">
+                <label for="dt">Tarikh Hingga</label>
+                <InputDate id="dt"
+                           @bind-Value="_dateTo"
+                           class="form-control"
+                           @onchange="@(() => OnDateToApply(_dateFrom,false,_dateTo,false))"
+                           Type="InputDateType.Date">
+                </InputDate>
+            </div>
+        </div>
+    </div>
+
+    <br />
+
+
+    <div class="form-group">
+        <label for="daysToApply">Jumlah Cuti Dipohon : </label>
+        <text>@DaysToApply</text>
+        <InputNumber @bind-Value="@applyLeaveViewModel.DaysToApply" hidden></InputNumber>
+    </div>
+    <br />
+    <button type="submit"
+            class="btn btn-primary">
+        Mohon
+    </button>
+    <button type="button"
+            class="btn btn-light"
+            @onclick="ClearForm">
+        Reset Semula
+    </button>
+</EditForm>
+@code {
+    private AuthenticationState? authenticationState;
+    [CascadingParameter]
+    private Task<AuthenticationState>? authenticationStateTask { get; set; }
+
+    private ApplyLeaveViewModel applyLeaveViewModel = new ApplyLeaveViewModel() { DateFrom = DateTime.Now, DateTo = DateTime.Now, DaysToApply = 1 };
+
+    private int _applyDateFromType = 0;
+    private int _applyDateToType = 0;
+
+    private double DaysToApply = 1;
+
+    private DateTime dateFrom = DateTime.Now;
+    public DateTime _dateFrom
+    {
+        get { return dateFrom; }
+        set
+        {
+            dateFrom = value;
+            applyLeaveViewModel.DateFrom = value;
+            DaysToApply = Math.Round(Math.Abs((applyLeaveViewModel.DateTo -  applyLeaveViewModel.DateFrom.AddDays(-1)).TotalDays));
+            applyLeaveViewModel.DaysToApply = Math.Round(Math.Abs((applyLeaveViewModel.DateTo -  applyLeaveViewModel.DateFrom.AddDays(-1)).TotalDays)); ;
+        }
+    }
+    private DateTime dateTo = DateTime.Now;
+
+    public DateTime _dateTo
+    {
+        get { return dateTo; }
+        set
+        {
+            dateTo = value;
+            applyLeaveViewModel.DateTo = value;
+            DaysToApply = Math.Round(Math.Abs((applyLeaveViewModel.DateTo -  applyLeaveViewModel.DateFrom.AddDays(-1)).TotalDays));
+            applyLeaveViewModel.DaysToApply = Math.Round(Math.Abs((applyLeaveViewModel.DateTo -  applyLeaveViewModel.DateFrom.AddDays(-1)).TotalDays));
+        }
+    }
+
+    private Leave? selectedLeave = null;
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+        if (firstRender)
+        {
+            JSRuntime.InvokeVoidAsync("PreventFormSubmissionWhenPressEnter", "applyLeave-form");
+        }
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        if (authenticationStateTask != null)
+            authenticationState = await authenticationStateTask;
+
+        applyLeaveViewModel.LvNumber = await GenerateRefNumberUseCase.ExecuteAsync("LA", DateTime.Now.ToString("yyyy"), DateTime.Now.ToString("MM"));
+    }
+
+    private async Task<double> OnDateToApply(DateTime dateFrom, bool isHalfDayDateFrom, DateTime dateTo, bool isHalfDayDateTo)
+    {
+        applyLeaveViewModel.DaysToApply = await GenerateTotalDaysBasedOnDateFromAndDateTo.ExecuteAsync(dateFrom, isHalfDayDateFrom, dateTo, isHalfDayDateTo);
+        return applyLeaveViewModel.DaysToApply;
+    }
+
+    private async Task<List<ItemViewModel>?> SearchLeave(string name)
+    {
+
+        var list = new List<Leave>();
+
+        if (applyLeaveViewModel.Employee != null)
+        {
+            if (applyLeaveViewModel.Employee.Employee_Leaves != null && applyLeaveViewModel.Employee.Employee_Leaves.Count> 0)
+            {
+                foreach (var el in applyLeaveViewModel.Employee.Employee_Leaves)
+                {
+                    var lv = new Leave
+                    {
+                        LeaveId = el.LeaveId,
+                        LeaveName = el.Leave?.LeaveName ?? ""
+                    };
+                    list.Add(lv);
+                }
+            }
+        }
+        //var list = ViewLeavesByNameUseCase.ExecuteAsync(name).GetAwaiter().GetResult();
+        if (list == null) return null;
+
+        return list.Select(x => new ItemViewModel { Id = x.LeaveId, Name = x.LeaveName })?.ToList();
+    }
+
+    private async Task OnItemLeaveSelected(ItemViewModel item)
+    {
+
+        this.selectedLeave = await ViewLeaveByIdUseCase.ExecuteAsync(item.Id);
+        applyLeaveViewModel.LeaveId = item.Id;
+        applyLeaveViewModel.Leave = this.selectedLeave;
+    }
+
+    private Employee? selectedEmployee = null;
+
+    private async Task<List<ItemViewModel>?> SearchEmployee(string name)
+    {
+        var list = await ViewEmployeesByNameUseCase.ExecuteAsync(name);
+        if (list == null) return null;
+
+        return list.Select(x => new ItemViewModel { Id = x.EmployeeId, Name = x.EmployeeName })?.ToList();
+    }
+
+    private async Task OnItemEmployeeSelected(ItemViewModel item)
+    {
+        this.selectedEmployee = await ViewEmployeeByIdUseCase.ExecuteAsync(item.Id);
+        applyLeaveViewModel.EmployeeId = item.Id;
+        applyLeaveViewModel.Employee = this.selectedEmployee;
+
+    }
+
+    private async Task Apply()
+    {
+        applyLeaveViewModel.DateFromApplyType = (ApplyType)_applyDateFromType;
+        applyLeaveViewModel.DateToApplyType = (ApplyType)_applyDateToType;
+
+        if (this.selectedEmployee != null &&
+            this.selectedLeave != null &&
+            authenticationState != null &&
+            !string.IsNullOrWhiteSpace(authenticationState.User?.Identity?.Name))
+        {
+            await applyLeaveUseCase.ExecuteAsync(
+                this.applyLeaveViewModel.LvNumber,
+                this.selectedEmployee,
+                this.selectedLeave,
+                this.applyLeaveViewModel.DaysToApply,
+                authenticationState.User.Identity.Name,
+                this.applyLeaveViewModel.DateFrom,
+                this.applyLeaveViewModel.DateTo,
+                (ApplyType)this.applyLeaveViewModel.DateFromApplyType,
+                (ApplyType)this.applyLeaveViewModel.DateToApplyType);
+        }
+
+
+        ClearForm();
+
+    }
+
+    private async void ClearForm()
+    {
+        this.applyLeaveViewModel = new ApplyLeaveViewModel();
+        applyLeaveViewModel.LvNumber = await GenerateRefNumberUseCase.ExecuteAsync("LA", DateTime.Now.ToString("yyyy"), DateTime.Now.ToString("MM"));
+        this.selectedLeave = null;
+        this.selectedEmployee = null;
+        _applyDateFromType = 0;
+        _applyDateToType = 0;
+        DaysToApply = 1;
+        dateFrom = DateTime.Now;
+        dateTo = DateTime.Now;
+    }
+
+}

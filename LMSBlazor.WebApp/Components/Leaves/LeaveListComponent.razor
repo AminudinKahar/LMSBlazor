@@ -1,0 +1,27 @@
+﻿@inject IViewLeavesByNameUseCase ViewLeavesByNameUseCase
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Perihal</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <LeaveListItemComponent Leaves="listLeaves"></LeaveListItemComponent>
+    </tbody>
+</table>
+
+@code {
+    private List<Leave> listLeaves = new List<Leave>();
+
+    [Parameter]
+    public string searchTerm { get; set; } = string.Empty;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        listLeaves = (await ViewLeavesByNameUseCase.ExecuteAsync(this.searchTerm)).ToList();
+
+    }
+
+}

@@ -1,0 +1,30 @@
+﻿@inject NavigationManager NavigationManager
+
+@if (Employees != null && Employees.Count > 0)
+{
+    foreach (var emp in Employees)
+    {
+        <tr>
+            <td>@emp.EmployeeName</td>
+            <td>@emp.EmployeeAge</td>
+            <td>@emp.TotalLeaveDays</td>
+            <td>
+                <button type="button"
+                        class="btn btn-light"
+                        @onclick="@(() => EditEmployee(emp.EmployeeId))">
+                    Ubah
+                </button>
+            </td>
+        </tr>
+    }
+}
+
+@code {
+    [Parameter]
+    public List<Employee> Employees { get; set; } = new List<Employee>();
+
+    public void EditEmployee(int employeeId)
+    {
+        NavigationManager.NavigateTo($"/editEmployee/{employeeId}");
+    }
+}

@@ -1,0 +1,55 @@
+﻿@page "/editLeave/{LvId:int}"
+@inject IViewLeaveByIdUseCase ViewLeaveByIdUseCase
+@inject IEditLeaveUseCase EditLeaveUseCase
+@inject NavigationManager NavigationManager
+
+@attribute [Authorize(Policy = "HR")]
+<h3>Ubah Jenis Cuti</h3>
+
+<br />
+
+<EditForm Model="leave" OnValidSubmit="SaveLeave">
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+    <ValidationSummary></ValidationSummary>
+    <div class="form-group">
+        <label for="name">Perihal</label>
+        <InputText id="name"
+                   @bind-Value="leave.LeaveName"
+                   class="form-control">
+
+        </InputText>
+    </div>
+    <br />
+    <button type="submit"
+            class="btn btn-primary">
+        Save
+    </button>
+    <button type="button"
+            class="btn btn-light"
+            @onclick="Cancel">
+        Cancel
+    </button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int LvId { get; set; }
+
+    private Leave leave { get; set; } = new Leave();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        this.leave = await ViewLeaveByIdUseCase.ExecuteAsync(LvId);
+    }
+
+    private async Task SaveLeave()
+    {
+        await EditLeaveUseCase.ExecuteAsync(this.leave);
+        NavigationManager.NavigateTo("leaves");
+    }
+
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo("leaves");
+    }
+}

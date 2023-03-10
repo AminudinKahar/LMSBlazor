@@ -1,0 +1,23 @@
+﻿<div class="input-group">
+    <input type="text"
+           class="form-control"
+           placeholder="Sila taip untuk mulakan carian" 
+           @bind-value="nameToSearch"/>
+    <button type="button"
+            class="btn btn-success input-group-text"
+            @onclick="OnSearch">
+        Cari
+    </button>
+</div>
+
+@code {
+    private string nameToSearch = string.Empty;
+
+    [Parameter]
+    public EventCallback<string> OnSearchLeave { get; set; }
+
+    private void OnSearch()
+    {
+        OnSearchLeave.InvokeAsync(nameToSearch);
+    }
+}

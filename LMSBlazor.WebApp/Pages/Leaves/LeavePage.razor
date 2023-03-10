@@ -1,0 +1,28 @@
+﻿@page "/leaves"
+@inject NavigationManager NavigationManager
+
+@attribute [Authorize(Policy = "HR")]
+
+<h3>Jenis Cuti</h3>
+<br />
+<SearchLeaveComponent OnSearchLeave="OnLeaveSearch"></SearchLeaveComponent>
+<br />
+<LeaveListComponent searchTerm="@searchTerm"></LeaveListComponent>
+<br />
+<button type="button"
+        class="btn btn-primary"
+        @onclick="AddLeave">
+    Tambah Baru
+</button>
+@code {
+
+    private string searchTerm = string.Empty;
+    private void OnLeaveSearch(string searchTerm)
+    {
+        this.searchTerm = searchTerm;
+    }
+    private void AddLeave()
+    {
+        NavigationManager.NavigateTo("/addLeave");
+    }
+}

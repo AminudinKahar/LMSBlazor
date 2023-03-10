@@ -1,0 +1,28 @@
+﻿
+@inject IViewEmployeesByNameUseCase ViewEmployeesByNameUseCase
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nama</th>
+            <th>Umur</th>
+            <th>Jumlah Cuti</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <EmployeeListItemComponent Employees="listEmployees"></EmployeeListItemComponent>
+    </tbody>
+</table>
+@code {
+    private List<Employee> listEmployees = new List<Employee>();
+
+    [Parameter]
+    public string searchTerm { get; set; } = string.Empty;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        listEmployees = (await ViewEmployeesByNameUseCase.ExecuteAsync(this.searchTerm)).ToList();
+
+    }
+}

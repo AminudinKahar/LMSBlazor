@@ -1,0 +1,30 @@
+﻿
+@inject IViewLeaveApplicationsByLvNumberUseCase ViewLeaveApplicationsByLvNumberUseCase
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>No Rujukan</th>
+            <th>Nama</th>
+            <th>Jenis Cuti</th>
+            <th>Jumlah Cuti Dipohon</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <LeaveApplicationListItemComponent LeaveApplications="listLeaveApplications"></LeaveApplicationListItemComponent>
+    </tbody>
+</table>
+@code {
+    private List<LeaveApplication> listLeaveApplications = new List<LeaveApplication>();
+
+    [Parameter]
+    public string searchTerm { get; set; } = string.Empty;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        listLeaveApplications = (await ViewLeaveApplicationsByLvNumberUseCase.ExecuteAsync(this.searchTerm)).ToList();
+
+    }
+}

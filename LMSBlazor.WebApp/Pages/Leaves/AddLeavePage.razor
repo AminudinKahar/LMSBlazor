@@ -1,0 +1,45 @@
+﻿@page "/addLeave"
+
+@inject IAddLeaveUseCase AddLeaveUseCase
+@inject NavigationManager NavigationManager
+
+@attribute [Authorize(Policy = "HR")]
+<h3>Add Inventory</h3>
+<br />
+<EditForm Model="leave" OnValidSubmit="SaveLeave">
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+    <ValidationSummary></ValidationSummary>
+    <div class="form-group">
+        <label class="form-label" for="name">Perihal</label>
+        <InputText id="name"
+                   @bind-Value="leave.LeaveName"
+                   class="form-control">
+
+        </InputText>
+    </div>
+    <br />
+    <button type="submit"
+            class="btn btn-primary">
+        Simpan
+    </button>
+    <button type="button"
+            class="btn btn-light"
+            @onclick="Cancel">
+        Kembali
+    </button>
+</EditForm>
+@code {
+    private Leave leave = new Leave();
+
+    private async Task SaveLeave()
+    {
+        await AddLeaveUseCase.ExecuteAsync(leave);
+        NavigationManager.NavigateTo("leaves");
+    }
+
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo("leaves");
+    }
+}
+
