@@ -1,8 +1,13 @@
-﻿<AuthorizeView>
+﻿@using Microsoft.AspNetCore.Hosting
+@using Microsoft.AspNetCore.Mvc.ViewEngines
+
+@inject SignInManager<IdentityUser> SignInManager
+@inject NavigationManager NavigationManager
+<AuthorizeView>
     <Authorized>
-        <a href="/identity/account/logout">
-            Log Keluar
-        </a>
+        <NavLink class="nav-link" href="/Identity/Account/Logout" Match="NavLinkMatch.All">
+            <span class="oi oi-power-standby" aria-hidden="true"></span> Logout
+        </NavLink>
     </Authorized>
     <NotAuthorized>
         <a href="/identity/account/login">
@@ -12,5 +17,10 @@
 </AuthorizeView>
 
 @code {
+    private async void OnLogOut()
+    {
+        await SignInManager.SignOutAsync();
 
+        NavigationManager.NavigateTo("/Identity/Account/Login/ReturnUrl=~/");
+    }
 }

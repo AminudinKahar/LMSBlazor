@@ -87,6 +87,11 @@ builder.Services.AddTransient<IDenyLeaveUseCase, DenyLeaveUseCase>();
 builder.Services.AddTransient<IGenerateRefNumberUseCase, GenerateRefNumberUseCase>();
 builder.Services.AddTransient<IGenerateTotalDaysBasedOnDateFromAndDateTo, GenerateTotalDaysBasedOnDateFromAndDateTo>();
 
+
+builder.Services.AddServerSideBlazor().AddCircuitOptions(e =>
+{
+    e.DetailedErrors = true;
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

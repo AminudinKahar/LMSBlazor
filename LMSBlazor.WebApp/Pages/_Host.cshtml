@@ -3,7 +3,7 @@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @using Microsoft.AspNetCore.Authorization
 @{
-    Layout = "_Layout";
+    Layout = "_TemplateLayout";
 }
 @attribute [Authorize]
 <component type="typeof(App)" render-mode="ServerPrerendered" />
