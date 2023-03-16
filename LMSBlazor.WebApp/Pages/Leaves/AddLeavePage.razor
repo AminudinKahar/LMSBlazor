@@ -34,12 +34,12 @@
     private async Task SaveLeave()
     {
         await AddLeaveUseCase.ExecuteAsync(leave);
-        NavigationManager.NavigateTo("leaves");
+        NavigationManager.NavigateTo(NavigationManager.BaseUri + "leaves");
     }
 
     private void Cancel()
     {
-        NavigationManager.NavigateTo("leaves");
+        NavigationManager.NavigateTo(NavigationManager.BaseUri + "leaves");
     }
 }
 

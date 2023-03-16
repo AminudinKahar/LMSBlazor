@@ -84,7 +84,7 @@
 
     private async Task SaveUser()
     {
-        if (viewModel != null)
+        if (viewModel != null && viewModel.Department != null)
         {
             if (userHadDepartment)
                 await UserManager.ReplaceClaimAsync(user, departmentClaim, new Claim("Department", viewModel.Department));
@@ -92,12 +92,12 @@
                 await UserManager.AddClaimAsync(user, new Claim("Department", viewModel.Department));
         }
 
-        NavigationManager.NavigateTo("/manageusers");
+        NavigationManager.NavigateTo(NavigationManager.BaseUri + "manageusers");
 
     }
     private void Cancel()
     {
-        NavigationManager.NavigateTo("/manageusers");
+        NavigationManager.NavigateTo(NavigationManager.BaseUri + "manageusers");
     }
 
 }

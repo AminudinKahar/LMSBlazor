@@ -29,6 +29,18 @@ namespace LMSBlazor.Plugins.InMemory
             return Task.CompletedTask;
         }
 
+        public Task DeleteLeaveAsync(Leave leave)
+        {
+            var lv = _leaves.FirstOrDefault(x => x.LeaveId == leave.LeaveId);
+
+            if (lv != null)
+            {
+                _leaves.Remove(lv);
+            }
+
+            return Task.CompletedTask;
+        }
+
         public async Task<IEnumerable<Leave>> GetLeavesByNameAsync(string name)
         {
             if (string.IsNullOrWhiteSpace(name)) return await Task.FromResult(_leaves);

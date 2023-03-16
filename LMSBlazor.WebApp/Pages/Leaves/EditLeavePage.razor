@@ -22,12 +22,12 @@
     <br />
     <button type="submit"
             class="btn btn-primary">
-        Save
+        Simpan
     </button>
     <button type="button"
             class="btn btn-light"
             @onclick="Cancel">
-        Cancel
+        Kembali
     </button>
 </EditForm>
 
@@ -44,12 +44,12 @@
 
     private async Task SaveLeave()
     {
-        await EditLeaveUseCase.ExecuteAsync(this.leave);
-        NavigationManager.NavigateTo("leaves");
+        await EditLeaveUseCase.ExecuteAsync(leave);
+        NavigationManager.NavigateTo(NavigationManager.BaseUri + "leaves");
     }
 
     private void Cancel()
     {
-        NavigationManager.NavigateTo("leaves");
+        NavigationManager.NavigateTo(NavigationManager.BaseUri + "leaves");
     }
 }

@@ -22,6 +22,19 @@ namespace LMSBlazor.Plugins.SqlServer
 
         }
 
+        public async Task DeleteLeaveAsync(Leave leave)
+        {
+            using var db = this.contextFactory.CreateDbContext();
+            var lv = await db.Leaves.FindAsync(leave.LeaveId);
+
+            if (lv != null)
+            {
+                db.Leaves.Remove(lv);
+
+                await db.SaveChangesAsync();
+            }
+        }
+
         public async Task<IEnumerable<Leave>> GetLeavesByNameAsync(string name)
         {
             using var db = this.contextFactory.CreateDbContext();

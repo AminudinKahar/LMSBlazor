@@ -1,4 +1,6 @@
 ﻿@inject NavigationManager NavigationManager
+@inject IViewLeaveByIdUseCase ViewLeaveByIdUseCase
+@inject IDeleteLeaveUseCase DeleteLeaveUseCase
 
 @if (Leaves != null && Leaves.Count > 0)
 {
@@ -12,6 +14,11 @@
                         @onclick="@(() => EditLeave(lv.LeaveId))">
                     Ubah
                 </button>
+                <button type="button"
+                        class="btn btn-danger"
+                        @onclick="@(() => RemoveLeave(lv.LeaveId))">
+                    Hapus
+                </button>
             </td>
         </tr>
     }
@@ -24,5 +31,16 @@
     public void EditLeave(int leaveId)
     {
         NavigationManager.NavigateTo($"/editLeave/{leaveId}");
+    }
+
+    public async void RemoveLeave(int leaveId)
+    {
+        Leave lv = await ViewLeaveByIdUseCase.ExecuteAsync(leaveId);
+
+
+        if (lv != null)
+            await DeleteLeaveUseCase.ExecuteAsync(lv);
+
+        NavigationManager.NavigateTo(NavigationManager.BaseUri + "leaves",forceLoad: true);
     }
 }

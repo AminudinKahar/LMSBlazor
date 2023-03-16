@@ -71,6 +71,7 @@ builder.Services.AddTransient<IViewLeavesByNameUseCase, ViewLeavesByNameUseCase>
 builder.Services.AddTransient<IAddLeaveUseCase, AddLeaveUseCase>();
 builder.Services.AddTransient<IEditLeaveUseCase, EditLeaveUseCase>();
 builder.Services.AddTransient<IViewLeaveByIdUseCase, ViewLeaveByIdUseCase>();
+builder.Services.AddTransient<IDeleteLeaveUseCase, DeleteLeaveUseCase>();
 
 builder.Services.AddTransient<IViewEmployeesByNameUseCase, ViewEmployeesByNameUseCase>();
 builder.Services.AddTransient<IAddEmployeeUseCase, AddEmployeeUseCase>();

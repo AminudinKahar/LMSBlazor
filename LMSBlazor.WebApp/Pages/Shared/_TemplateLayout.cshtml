@@ -27,7 +27,9 @@
               integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous"
               asp-fallback-href="~/Identity/lib/bootstrap/dist/css/bootstrap.min.css"
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
-        <link rel="stylesheet" href="~/Identity/css/site.css" asp-append-version="true" />
+        @*<link rel="stylesheet" href="~/Identity/css/site.css" asp-append-version="true" />*@
+        <link rel="shortcut icon" type="image/png" href="~/templates/logos/atasLogoIdwal.ico" />
+        <link rel="stylesheet" href="~/templates/css/styles.css" />
     </environment>
     <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
 </head>
@@ -193,10 +195,19 @@
         </script>
         <script src="~/templates/libs/jquery/dist/jquery.min.js"></script>
         <script src="~/templates/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/js/sidebarmenu.js"></script>
+        <script src="~/js/app.min.js"></script>
+
+
+        <link rel="stylesheet"
+              href="https://unpkg.com/simplebar@latest/dist/simplebar.css" />
+        <script src="https://unpkg.com/simplebar@latest/dist/simplebar.min.js"></script>
+        @*<script src="~/templates/libs/jquery/dist/jquery.min.js"></script>
+        <script src="~/templates/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
         <script src="~/template/js/sidebarmenu.js"></script>
         <script src="~/template/js/app.min.js"></script>
         <script src="~/template/libs/apexcharts/dist/apexcharts.min.js"></script>
-        <script src="~/template/libs/simplebar/dist/simplebar.js"></script>
+        <script src="~/template/libs/simplebar/dist/simplebar.js"></script>*@
     </environment>
 
 
@@ -206,3 +217,4 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+

@@ -95,14 +95,14 @@
 
 
             await EditEmployeeUseCase.ExecuteAsync(employee);
-            NavigationManager.NavigateTo("employees");
+            NavigationManager.NavigateTo(NavigationManager.BaseUri + "employees");
         }
 
     }
 
     private void Cancel()
     {
-        NavigationManager.NavigateTo("employees");
+        NavigationManager.NavigateTo(NavigationManager.BaseUri + "employees");
     }
 
 }

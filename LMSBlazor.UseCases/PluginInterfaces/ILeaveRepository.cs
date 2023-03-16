@@ -13,5 +13,6 @@ namespace LMSBlazor.UseCases.PluginInterfaces
         Task AddLeaveAsync(Leave leave);
         Task UpdateLeaveAsync(Leave leave);
         Task<Leave> ViewLeaveByIdAsync(int leaveId);
+        Task DeleteLeaveAsync(Leave leave);
     }
 }
