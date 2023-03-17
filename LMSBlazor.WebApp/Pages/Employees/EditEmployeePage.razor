@@ -22,14 +22,6 @@
             </InputText>
         </div>
         <div class="form-group">
-            <label class="form-label" for="age">Umur</label>
-            <InputNumber id="age"
-                         @bind-Value="employee.EmployeeAge"
-                         class="form-control">
-
-            </InputNumber>
-        </div>
-        <div class="form-group">
             <label class="form-label" for="phoneNum">No Telefon</label>
             <InputText id="phoneNum"
                        @bind-Value="employee.EmployeePhoneNumber"
@@ -55,17 +47,11 @@
         </div>
         <div class="form-group">
             <label class="form-label" for="lvs">Jenis Cuti</label>
-            <Employee_LeavesComponent Employee="this.employee"></Employee_LeavesComponent>
+            <Employee_LeavesComponent Employee="this.employee" OnAmountChanged="OnAmountChanged"></Employee_LeavesComponent>
         </div>
         <br />
-        <div class="form-group">
-            <label class="form-label" for="totalDays">Jumlah Cuti Berbaki</label>
-            <InputNumber id="totalDays"
-                         @bind-Value="employee.TotalLeaveDays"
-                         class="form-control">
 
-            </InputNumber>
-        </div>
+        <input hidden @bind-value="this.employee.TotalLeaveDays" />
         <br />
         <button type="submit"
                 class="btn btn-primary">
@@ -98,6 +84,12 @@
             NavigationManager.NavigateTo(NavigationManager.BaseUri + "employees");
         }
 
+    }
+
+    private void OnAmountChanged(double days)
+    {
+        if (this.employee != null)
+            this.employee.TotalLeaveDays = days;
     }
 
     private void Cancel()

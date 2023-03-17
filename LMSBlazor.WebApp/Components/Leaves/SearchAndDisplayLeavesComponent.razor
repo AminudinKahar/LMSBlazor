@@ -16,7 +16,9 @@
     </div>
 
 }
-@code {
+@code {      
+    [Parameter]
+    public EventCallback<double> OnInitialCount { get; set; }
     private List<Leave> _leaves = new List<Leave>();
 
     [Parameter]
@@ -32,6 +34,8 @@
     private async Task OnSelectLeave(Leave leave)
     {
         await OnLeaveSelected.InvokeAsync(leave);
+        await OnInitialCount.InvokeAsync(1);
+
         _leaves.Clear();
     }
 }

@@ -1,6 +1,6 @@
 ﻿<div class="card">
     <div class="card-body">
-        <SearchAndDisplayLeavesComponent OnLeaveSelected="OnLeaveSelected"></SearchAndDisplayLeavesComponent>
+        <SearchAndDisplayLeavesComponent OnLeaveSelected="OnLeaveSelected" OnInitialCount="OnInitialCount"></SearchAndDisplayLeavesComponent>
         @if (this.Employee.Employee_Leaves != null && this.Employee.Employee_Leaves.Count > 0)
         {
             <table class="table">
@@ -19,11 +19,11 @@
                                 @emp_lv.Leave?.LeaveName
                             </td>
                             <td>
-                                <input type="number" 
-                                       min="0"
-                                       step="0.5" class="form-control"
-                                       @bind-value="emp_lv.DaysLeft" 
-                                       />
+                                <input class="form-control" min="0"
+                                       step="0.5" 
+                                       @onfocusout="@IncrementCount" 
+                                       type="number" 
+                                       @bind-value="@emp_lv.DaysLeft">
                             </td>
                             <td>
                                 <button type="button"
@@ -37,21 +37,59 @@
                 </tbody>
             </table>
         }
+        <div class="form-group">
+            <label class="form-label" for="totalDays">Jumlah Cuti Berbaki : @currentCount</label>
+            
+        </div>
     </div>
 </div>
 @code {
     [Parameter]
+    public int Amount { get; set; }
+    [Parameter] public EventCallback<double> OnAmountChanged { get; set; }
+
+    private double currentCount { get; set; }
+
+    [Parameter]
     public Employee Employee { get; set; } = new Employee();
 
-    private void RemoveLeave(Employee_Leave employee_Leave)
+    protected override void OnInitialized()
+    {
+        currentCount = Employee.TotalLeaveDays;
+    }
+
+
+    async Task IncrementCount()
+    {
+        currentCount = 0;
+        foreach (var emp_lv in Employee.Employee_Leaves)
+        {
+            currentCount = currentCount + emp_lv.DaysLeft;
+        }
+
+
+        if (OnAmountChanged.HasDelegate)
+        {
+            await OnAmountChanged.InvokeAsync(currentCount);
+        }
+    }
+
+    private async void RemoveLeave(Employee_Leave employee_Leave)
     {
         this.Employee.Employee_Leaves.Remove(employee_Leave);
+        await IncrementCount();
 
     }
 
     private void OnLeaveSelected(Leave leave)
     {
         this.Employee.AddLeave(leave);
+    }
+
+    private async Task OnInitialCount(double days)
+    {
+        currentCount = currentCount + days;
+        await IncrementCount();
     }
 
 
