@@ -80,5 +80,17 @@ namespace LMSBlazor.Plugins.SqlServer
 
             }
         }
+
+        public async Task DeleteEmployeeAsync(Employee employee)
+        {
+            using var db = this.contextFactory.CreateDbContext();
+            var emp = db.Employees.FirstOrDefault(x => x.EmployeeId == employee.EmployeeId);
+
+            if (emp != null)
+            {
+                db.Employees.Remove(emp);
+                await db.SaveChangesAsync();
+            }
+        }
     }
 }

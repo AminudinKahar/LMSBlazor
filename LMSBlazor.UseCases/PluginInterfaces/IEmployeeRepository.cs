@@ -13,5 +13,6 @@ namespace LMSBlazor.UseCases.PluginInterfaces
         Task AddEmployeeAsync(Employee employee);
         Task<Employee?> GetEmployeeByIdAsync(int employeeId);
         Task UpdateEmployeeAsync(Employee employee);
+        Task DeleteEmployeeAsync(Employee employee);
     }
 }

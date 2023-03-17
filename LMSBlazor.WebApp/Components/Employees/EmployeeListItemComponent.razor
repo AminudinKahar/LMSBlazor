@@ -1,4 +1,6 @@
 ﻿@inject NavigationManager NavigationManager
+@inject IViewEmployeeByIdUseCase ViewEmployeeByIdUseCase
+@inject IDeleteEmployeeUseCase DeleteEmployeeUseCase
 
 @if (Employees != null && Employees.Count > 0)
 {
@@ -6,13 +8,18 @@
     {
         <tr>
             <td>@emp.EmployeeName</td>
-            <td>@emp.EmployeeAge</td>
-            <td>@emp.TotalLeaveDays</td>
+            <td>@emp.EmployeeEmail</td>
+            <td >@emp.TotalLeaveDays</td>
             <td>
                 <button type="button"
                         class="btn btn-light"
                         @onclick="@(() => EditEmployee(emp.EmployeeId))">
                     Ubah
+                </button>
+                <button type="button"
+                        class="btn btn-danger"
+                        @onclick="@(() => RemoveEmployee(emp.EmployeeId))">
+                    Hapus
                 </button>
             </td>
         </tr>
@@ -26,5 +33,16 @@
     public void EditEmployee(int employeeId)
     {
         NavigationManager.NavigateTo($"/editEmployee/{employeeId}");
+    }
+
+    public async void RemoveEmployee(int employeeId)
+    {
+        Employee? emp = await ViewEmployeeByIdUseCase.ExecuteAsync(employeeId);
+
+
+        if (emp != null)
+            await DeleteEmployeeUseCase.ExecuteAsync(emp);
+
+        NavigationManager.NavigateTo(NavigationManager.BaseUri + "employees", forceLoad: true);
     }
 }

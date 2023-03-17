@@ -59,6 +59,18 @@ namespace LMSBlazor.Plugins.InMemory
             return Task.CompletedTask;
         }
 
+        public Task DeleteEmployeeAsync(Employee employee)
+        {
+            var emp = _employees.FirstOrDefault(x => x.EmployeeId == employee.EmployeeId);
+
+            if (emp != null)
+            {
+                _employees.Remove(emp);
+            }
+
+            return Task.CompletedTask;
+        }
+
         public async Task<Employee?> GetEmployeeByIdAsync(int employeeId)
         {
             var emp = _employees.FirstOrDefault(x => x.EmployeeId == employeeId);

@@ -14,7 +14,7 @@ namespace LMSBlazor.CoreBusiness
         [Required(ErrorMessage = "Nama diperlukan")]
         [StringLength(150, ErrorMessage = "Nama idak boleh melebihi 150 aksara")]
         public string EmployeeName { get; set; } = string.Empty;
-        [Range(18, int.MaxValue, ErrorMessage = "Umur mesti sama atau melebihi 18 tahun")]
+        //[Range(18, int.MaxValue, ErrorMessage = "Umur mesti sama atau melebihi 18 tahun")]
         public int EmployeeAge { get; set; }
         [Phone(ErrorMessage = "Nombor Telefon tidak sah")]
         public string EmployeePhoneNumber { get; set; } = string.Empty;
